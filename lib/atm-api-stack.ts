@@ -6,17 +6,22 @@ export class AtmApiStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        // Definir las funciones Lambda 1
+        const emailSender = 'kristylanistek@gmail.com';
+        const emailPassword = 'qrnl ldum kpjs plmx';
+
+        // Definir las funciones Lambda
         const depositLambda = new lambda.Function(this, 'DepositFunction', {
             runtime: lambda.Runtime.PYTHON_3_8,
             code: lambda.Code.fromAsset('lambda'),
             handler: 'deposit.handler',
             environment: {
-                DB_HOST: 'sql3.freemysqlhosting.net',
-                DB_NAME: 'sql5715916',
-                DB_USER: 'sql5715916',
-                DB_PASSWORD: 'JWePdTcmsF',
-                DB_PORT: '3306'
+                DB_HOST: 'sql3.freesqldatabase.com',
+                DB_NAME: 'sql3722722',
+                DB_USER: 'sql3722722',
+                DB_PASSWORD: 'n84ZHtJsrX',
+                DB_PORT: '3306',
+                EMAIL_SENDER: emailSender,
+                EMAIL_PASSWORD: emailPassword
             }
         });
 
@@ -25,11 +30,13 @@ export class AtmApiStack extends cdk.Stack {
             code: lambda.Code.fromAsset('lambda'),
             handler: 'withdraw.handler',
             environment: {
-                DB_HOST: 'sql3.freemysqlhosting.net',
-                DB_NAME: 'sql5715916',
-                DB_USER: 'sql5715916',
-                DB_PASSWORD: 'JWePdTcmsF',
-                DB_PORT: '3306'
+                DB_HOST: 'sql3.freesqldatabase.com',
+                DB_NAME: 'sql3722722',
+                DB_USER: 'sql3722722',
+                DB_PASSWORD: 'n84ZHtJsrX',
+                DB_PORT: '3306',
+                EMAIL_SENDER: emailSender,
+                EMAIL_PASSWORD: emailPassword
             }
         });
 
@@ -38,20 +45,22 @@ export class AtmApiStack extends cdk.Stack {
             code: lambda.Code.fromAsset('lambda'),
             handler: 'changepin.handler',
             environment: {
-              DB_HOST: 'sql3.freemysqlhosting.net',
-              DB_NAME: 'sql5715916',
-              DB_USER: 'sql5715916',
-              DB_PASSWORD: 'JWePdTcmsF',
-                DB_PORT: '3306'
+                DB_HOST: 'sql3.freesqldatabase.com',
+                DB_NAME: 'sql3722722',
+                DB_USER: 'sql3722722',
+                DB_PASSWORD: 'n84ZHtJsrX',
+                DB_PORT: '3306',
+                EMAIL_SENDER: emailSender,
+                EMAIL_PASSWORD: emailPassword
             }
         });
 
-        // Definir API Gateway
+        // API Gateway
         const api = new apigateway.RestApi(this, 'atm-api', {
-            restApiName: 'ATM Service',
-            description: 'This service handles ATM transactions.'
+            restApiName: 'ATM API'
         });
 
+        // Integrar las funciones Lambda con API Gateway
         const depositIntegration = new apigateway.LambdaIntegration(depositLambda);
         const withdrawIntegration = new apigateway.LambdaIntegration(withdrawLambda);
         const changePinIntegration = new apigateway.LambdaIntegration(changePinLambda);
